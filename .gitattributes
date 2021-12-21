@@ -1,0 +1,5 @@
+* text eol=lf
+* text eol=lf
+
+icon.png filter=lfs diff=lfs merge=lfs -text
+logo.png filter=lfs diff=lfs merge=lfs -text
