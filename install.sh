@@ -64,22 +64,28 @@ case "${OMADA_VER}" in
     ;;
 esac
 
+mkdir /data
+mkdir /data/db
+
 mkdir "${OMADA_DIR}" -vp
+mkdir "${OMADA_DIR}/logs"
+mkdir "${OMADA_DIR}/work"
+
 cp bin "${OMADA_DIR}" -r
-cp data "${OMADA_DIR}" -r
 cp properties "${OMADA_DIR}" -r
 cp webapps "${OMADA_DIR}" -r
 cp keystore "${OMADA_DIR}" -r
 cp lib "${OMADA_DIR}" -r
 cp install.sh "${OMADA_DIR}" -r
 cp uninstall.sh "${OMADA_DIR}" -r
+
+ln -s /data "${OMADA_DIR}/data"
 ln -sf "$(which mongod)" "${OMADA_DIR}/bin/mongod"
 chmod 755 "${OMADA_DIR}"/bin/*
 
 echo "**** Setup omada User Account ****"
 groupadd -g 508 omada
 useradd -u 508 -g 508 -d "${OMADA_DIR}" omada
-mkdir "${OMADA_DIR}/logs" "${OMADA_DIR}/work"
 chown -R omada:omada "${OMADA_DIR}/data" "${OMADA_DIR}/logs" "${OMADA_DIR}/work"
 
 echo "**** Cleanup ****"
