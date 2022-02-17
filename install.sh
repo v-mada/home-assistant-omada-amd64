@@ -7,6 +7,7 @@ ARCH="${ARCH:-}"
 OMADA_VER="${OMADA_VER:-}"
 OMADA_TAR="${OMADA_TAR:-}"
 OMADA_URL="${OMADA_URL:-}"
+OMADA_MAJOR_VER="$(echo "${OMADA_VER}" | awk -F '.' '{print $1}')"
 
 die() { echo -e "$@" 2>&1; exit 1; }
 
@@ -64,22 +65,33 @@ case "${OMADA_VER}" in
     ;;
 esac
 
-mkdir /data
-mkdir /data/db
+mkdir -p /data/db
 
+# make sure tha the install directory exists
 mkdir "${OMADA_DIR}" -vp
 mkdir "${OMADA_DIR}/logs"
 mkdir "${OMADA_DIR}/work"
 
-cp bin "${OMADA_DIR}" -r
-cp properties "${OMADA_DIR}" -r
-cp webapps "${OMADA_DIR}" -r
-cp keystore "${OMADA_DIR}" -r
-cp lib "${OMADA_DIR}" -r
-cp install.sh "${OMADA_DIR}" -r
-cp uninstall.sh "${OMADA_DIR}" -r
+# starting with 5.0.x, the installation has no webapps directory; these values are pulled from the install.sh
+case "${OMADA_MAJOR_VER}" in
+  5)
+    NAMES=( bin properties keystore lib install.sh uninstall.sh )
+    ;;
+  *)
+    NAMES=( bin properties keystore lib webapps install.sh uninstall.sh )
+    ;;
+esac
 
-ln -s /data "${OMADA_DIR}/data"
+# copy over the files to the destination
+for NAME in "${NAMES[@]}"
+do
+  cp "${NAME}" "${OMADA_DIR}" -r
+done
+
+# symlink to home assistant data dir
+ln -s /data "${OMADA_DIR}"
+
+# symlink for mongod
 ln -sf "$(which mongod)" "${OMADA_DIR}/bin/mongod"
 chmod 755 "${OMADA_DIR}"/bin/*
 

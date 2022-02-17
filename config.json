@@ -2,10 +2,10 @@
     "name": "Omada Controller",
     "version": "dev",
     "slug": "omada_controller",
-    "description": "TP-Link Omada Controller software",
+    "description": "TP-Link Omada Controller software v5",
     "webui": "https://[HOST]:[PORT:8043]",
     "startup": "application",
-    "arch": ["armv7"],
+    "arch": ["aarch64"],
     "ports": {
         "8088/tcp": 8088,
         "8043/tcp": 8043,
@@ -17,7 +17,8 @@
         "29812/tcp": 29812,
         "29812/udp": 29812,
         "29813/tcp": 29813,
-        "29813/udp": 29813  
+        "29813/udp": 29813,
+        "29814/tcp": 29814
     },
     "environment": {
         "MANAGE_HTTP_PORT": "8088",

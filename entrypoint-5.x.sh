@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
 
@@ -61,6 +61,9 @@ if [ "${PORTAL_HTTPS_PORT}" != "8843" ]
 then
   set_port_property portal.https.port 8843 "${PORTAL_HTTPS_PORT}"
 fi
+
+# set permissions on /data directory for home assistant persistence
+chown -R 508:508 "/data"
 
 # make sure permissions are set appropriately on each directory
 for DIR in data work logs
@@ -129,6 +132,15 @@ then
   echo "ERROR: the data volume mounted to /opt/tplink/EAPController/data appears to have data from a previous version!"
   echo "  Follow the upgrade instructions at https://github.com/mbentley/docker-omada-controller#upgrading-to-41"
   exit 1
+fi
+
+# check to see if the CMD passed contains the text "com.tplink.omada.start.OmadaLinuxMain" which is the old classpath from 4.x
+if [ "$(echo "${@}" | grep -q "com.tplink.omada.start.OmadaLinuxMain"; echo $?)" = "0" ]
+then
+  echo -e "\n############################"
+  echo "WARNING: CMD from 4.x detected!  It is likely that this container will fail to start properly with a \"Could not find or load main class com.tplink.omada.start.OmadaLinuxMain\" error!"
+  echo "  See the note on old CMDs at https://github.com/mbentley/docker-omada-controller#upgrade-issues for details on why and how to resolve the issue."
+  echo -e "############################\n"
 fi
 
 echo "INFO: Starting Omada Controller as user omada"
