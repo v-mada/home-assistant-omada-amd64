@@ -65,20 +65,25 @@ case "${OMADA_VER}" in
     ;;
 esac
 
-mkdir -p /data/db
-
 # make sure tha the install directory exists
 mkdir "${OMADA_DIR}" -vp
-mkdir "${OMADA_DIR}/logs"
-mkdir "${OMADA_DIR}/work"
 
 # starting with 5.0.x, the installation has no webapps directory; these values are pulled from the install.sh
 case "${OMADA_MAJOR_VER}" in
   5)
-    NAMES=( bin properties keystore lib install.sh uninstall.sh )
+    # check which 5.x we are running
+    case "${OMADA_VER}" in
+      5.3.1)
+        # 5.3.1 move the keystore directory to be a subdir of data
+        NAMES=( bin data properties lib install.sh uninstall.sh )
+        ;;
+      *)
+        NAMES=( bin data properties keystore lib install.sh uninstall.sh )
+        ;;
+    esac
     ;;
   *)
-    NAMES=( bin properties keystore lib webapps install.sh uninstall.sh )
+    NAMES=( bin data properties keystore lib webapps install.sh uninstall.sh )
     ;;
 esac
 
@@ -98,6 +103,7 @@ chmod 755 "${OMADA_DIR}"/bin/*
 echo "**** Setup omada User Account ****"
 groupadd -g 508 omada
 useradd -u 508 -g 508 -d "${OMADA_DIR}" omada
+mkdir "${OMADA_DIR}/logs" "${OMADA_DIR}/work"
 chown -R omada:omada "${OMADA_DIR}/data" "${OMADA_DIR}/logs" "${OMADA_DIR}/work"
 
 echo "**** Cleanup ****"
