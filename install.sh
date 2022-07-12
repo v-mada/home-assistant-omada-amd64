@@ -94,7 +94,7 @@ do
 done
 
 # symlink to home assistant data dir
-ln -s /data "${OMADA_DIR}"
+# ln -s /data "${OMADA_DIR}"
 
 # symlink for mongod
 ln -sf "$(which mongod)" "${OMADA_DIR}/bin/mongod"
