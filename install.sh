@@ -75,15 +75,15 @@ case "${OMADA_MAJOR_VER}" in
     case "${OMADA_VER}" in
       5.3.1)
         # 5.3.1 move the keystore directory to be a subdir of data
-        NAMES=( bin data properties lib install.sh uninstall.sh )
+        NAMES=( bin properties lib install.sh uninstall.sh )
         ;;
       *)
-        NAMES=( bin data properties keystore lib install.sh uninstall.sh )
+        NAMES=( bin properties keystore lib install.sh uninstall.sh )
         ;;
     esac
     ;;
   *)
-    NAMES=( bin data properties keystore lib webapps install.sh uninstall.sh )
+    NAMES=( bin properties keystore lib webapps install.sh uninstall.sh )
     ;;
 esac
 
@@ -94,7 +94,7 @@ do
 done
 
 # symlink to home assistant data dir
-# ln -s /data "${OMADA_DIR}"
+ln -s /data "${OMADA_DIR}"
 
 # symlink for mongod
 ln -sf "$(which mongod)" "${OMADA_DIR}/bin/mongod"

@@ -1,6 +1,6 @@
 {
     "name": "Omada Controller",
-    "version": "dev",
+    "version": "5.3.1.1",
     "slug": "omada_controller",
     "description": "TP-Link Omada Controller software v5",
     "webui": "https://[HOST]:[PORT:8043]",
