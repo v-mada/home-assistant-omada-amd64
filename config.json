@@ -5,7 +5,7 @@
     "description": "TP-Link Omada Controller software v5",
     "webui": "https://[HOST]:[PORT:8043]",
     "startup": "application",
-    "arch": ["aarch64"],
+    "arch": ["amd64"],
     "ports": {
         "8088/tcp": 8088,
         "8043/tcp": 8043,
