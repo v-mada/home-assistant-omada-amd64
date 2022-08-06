@@ -84,15 +84,15 @@ case "${OMADA_MAJOR_VER}" in
     if [ "${OMADA_MAJOR_MINOR_VER#*.}" -ge 3 ]
     then
       # 5.3.1 and above moved the keystore directory to be a subdir of data
-      NAMES=( bin data properties lib install.sh uninstall.sh )
+      NAMES=( bin properties lib install.sh uninstall.sh )
     else
       # is less than 5.3
-      NAMES=( bin data properties keystore lib install.sh uninstall.sh )
+      NAMES=( bin properties keystore lib install.sh uninstall.sh )
     fi
     ;;
   *)
     # isn't v5.x
-    NAMES=( bin data properties keystore lib webapps install.sh uninstall.sh )
+    NAMES=( bin properties keystore lib webapps install.sh uninstall.sh )
     ;;
 esac
 
