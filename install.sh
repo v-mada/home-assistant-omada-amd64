@@ -2,15 +2,22 @@
 
 set -e
 
+# omada controller dependency and package installer script for versions 4.x and 5.x
+
+# set default variables
+
 OMADA_DIR="/opt/tplink/EAPController"
 ARCH="${ARCH:-}"
 OMADA_VER="${OMADA_VER:-}"
 OMADA_TAR="${OMADA_TAR:-}"
 OMADA_URL="${OMADA_URL:-}"
 OMADA_MAJOR_VER="$(echo "${OMADA_VER}" | awk -F '.' '{print $1}')"
+OMADA_MAJOR_MINOR_VER="${OMADA_VER%.*}"
 
+# function to exit on error w/message
 die() { echo -e "$@" 2>&1; exit 1; }
 
+echo "**** Selecting packages based on the architecture and version ****"
 # common package dependencies
 PKGS=(
   gosu
@@ -20,6 +27,7 @@ PKGS=(
   wget
 )
 
+# add specific package for mongodb
 case "${ARCH}" in
 amd64|arm64|"")
   PKGS+=( mongodb-server-core )
@@ -36,6 +44,7 @@ echo "ARCH=${ARCH}"
 echo "OMADA_VER=${OMADA_VER}"
 echo "OMADA_TAR=${OMADA_TAR}"
 echo "OMADA_URL=${OMADA_URL}"
+echo "PKGS=( ${PKGS[*]} )"
 
 echo "**** Install Dependencies ****"
 export DEBIAN_FRONTEND=noninteractive
@@ -83,7 +92,7 @@ case "${OMADA_MAJOR_VER}" in
     ;;
   *)
     # isn't v5.x
-    NAMES=( bin properties keystore lib webapps install.sh uninstall.sh )
+    NAMES=( bin data properties keystore lib webapps install.sh uninstall.sh )
     ;;
 esac
 
@@ -105,6 +114,14 @@ groupadd -g 508 omada
 useradd -u 508 -g 508 -d "${OMADA_DIR}" omada
 mkdir "${OMADA_DIR}/logs" "${OMADA_DIR}/work"
 chown -R omada:omada "${OMADA_DIR}/data" "${OMADA_DIR}/logs" "${OMADA_DIR}/work"
+
+# for v5.1 & above, create backup of data/html directory in case it is missing (to be extracted at runtime)
+if [ -d /opt/tplink/EAPController/data/html ]
+then
+  # create backup
+  cd /opt/tplink/EAPController/data
+  tar zcvf ../data-html.tar.gz html
+fi
 
 echo "**** Cleanup ****"
 rm -rf /tmp/* /var/lib/apt/lists/*
